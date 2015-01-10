@@ -9,22 +9,10 @@ var selectedId;
 var pegCount = 32;           
 $(document).ready(
 function init(){
-    for(var i in board){
-        $('#content').append('<div class=\'pegrow\' id=\''+i+'\'>');
-        for(j in board[i]){
-            var id = i+"_"+j;
-            if(board[i][j] != -1){
-                $("#"+i).append('<div class=\'pegSquare\' id=\''+id+'\'>'+board[i][j]+'</div>');
-            }
-        }
-        $('#content').append("</br>");
-    }
+	createBoard();
     $("#pegCount").html("You have " + pegCount + " pegs left.");
     var selected = false;
-    var green = "#33ff00";
-    var red = "#ff3300";
-    var black = "#000000";
-    $('.peg')
+    $('.pegSquare')
       .css('cursor', 'pointer')
       .click(
         function(){
@@ -32,12 +20,12 @@ function init(){
             if(!selected && first($(this).attr("id"))){
                 selected = true;
                 selectedId = $(this).attr("id");
-                $(this).css('border-color', green);
+                $(this).addClass('selected');
             //clicked the selected one
             } else if (selected && $(this).attr("id") == selectedId){
                 selected = false;
                 selectedId = "";
-                $(this).css('border-color', black);
+                $(this).removeClass('selected');
             } else if(selected && second($(this).attr("id"))){
                 var id = $(this).attr("id");
             	var i = parseInt(id.substr(0, id.indexOf('_')));
@@ -47,25 +35,31 @@ function init(){
 				if(selectedI == i - 2){
 					//clicked is down from selected
 					board[i-1][j] = 0;
-					$("#"+(i-1).toString()+"_"+(j).toString()).html("0");
+					$("#"+(i-1).toString()+"_"+(j).toString()).addClass("hole");
+					$("#"+(i-1).toString()+"_"+(j).toString()).removeClass("peg");
 				} else if(selectedJ == j + 2){
 					//clicked is left of selected
 					board[i][j+1] = 0;
-					$("#"+(i).toString()+"_"+(j+1).toString()).html("0");
+					$("#"+(i).toString()+"_"+(j+1).toString()).addClass("hole");
+					$("#"+(i).toString()+"_"+(j+1).toString()).removeClass("peg");
 				} else if(selectedI == i + 2){
 					//clicked is up from selected
 					board[i+1][j] = 0;
-					$("#"+(i+1).toString()+"_"+(j).toString()).html("0");
+					$("#"+(i+1).toString()+"_"+(j).toString()).addClass("hole");
+					$("#"+(i+1).toString()+"_"+(j).toString()).removeClass("peg");
 				} else {
 					//clicked is to the right of selected
 					board[i][j-1] = 0;
-					$("#"+(i).toString()+"_"+(j-1).toString()).html("0");
+					$("#"+(i).toString()+"_"+(j-1).toString()).addClass("hole");
+					$("#"+(i).toString()+"_"+(j-1).toString()).removeClass("peg");
 				}
 				board[i][j] = 1;
 				board[selectedI][selectedJ] = 0;
-				$(this).html("1");
-				$("#"+selectedId.toString()).html("0");
-				$("#"+selectedId.toString()).css('border-color', black);
+				$(this).addClass("peg");
+				$(this).removeClass("hole");
+				$("#"+selectedId.toString()).addClass("hole");
+				$("#"+selectedId.toString()).removeClass("peg");
+				$("#"+selectedId.toString()).removeClass('selected');
 				selectedId = "";
 				selected = false;
 				pegCount--;
@@ -84,23 +78,59 @@ function init(){
         function(){
             if(!selected){
                if(first($(this).attr("id"))){
-                    $(this).css('background', green);
+                    $(this).addClass('greenHover');
                 } else {
-                    $(this).css('background', red);
+                    $(this).addClass('redHover');
                 }
             } else {
                  if(second($(this).attr("id"))){
-                    $(this).css('background', green);
-                } else {
-                    $(this).css('background', red);
+                    $(this).addClass('greenHover');
+                } else if(!$(this).hasClass("selected")) {
+                    $(this).addClass('redHover');
                 }
             }
         },
         function(){
-          $(this).css('background', '');
+          $(this).removeClass('greenHover');
+          $(this).removeClass('redHover');
+        }
+      );
+      
+     $('#newGame')
+      .css('cursor', 'pointer')
+      .click(
+        function(){
+			board = [[-1, -1, 1, 1, 1, -1, -1], 
+			                [-1, -1, 1, 1, 1, -1, -1], 
+			        [1, 1, 1, 1, 1, 1, 1], 
+			        [1, 1, 1, 0, 1, 1, 1], 
+			        [1, 1, 1, 1, 1, 1, 1],
+			                [-1, -1, 1, 1, 1, -1, -1],
+			                [-1, -1, 1, 1, 1,-1, -1]];
+			selectedId;  
+			pegCount = 32;  
+			$("#content").empty();
+			init();      
         }
       );
 });
+
+function createBoard(){
+    for(var i in board){
+        $('#content').append('<div class=\'pegrow\' id=\''+i+'\'>');
+        for(j in board[i]){
+            var id = i+"_"+j;
+            if(board[i][j] != -1){
+                var className = "peg";
+                if(board[i][j] == 0){
+                    className = "hole";
+                }
+                $("#"+i).append('<div class=\'pegSquare '+className+'\' id=\''+id+'\'></div>');
+            }
+        }
+        $('#content').append("</br>");
+    }    
+}
 
 function first(id){
 	//this determines if it is an allowable first move

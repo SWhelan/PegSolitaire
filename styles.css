@@ -1,20 +1,47 @@
 .pegSquare {
-    border: 2px solid black;
+    border: 2px solid;
     padding: 10px;
     margin: 2px;
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
 }
 
-.pegrow {
+.pegrow {   
     text-align: center;
-    }
+}
     
 .peg {
-	
+	border-radius: 50%;
+	border-color: #ffffff;
+	background-color: #0000ff;
 }
 
 .hole {
-
+	border-radius: 50%;
+	border-color: #0000ff;
+	background-color: #ffffff;
 }
+
+.selected {
+	background-color: #33ff00;
+}
+
+.greenHover {
+	background-color: #33ff00;
+}
+
+.redHover {
+	background-color: #ff3300;
+}
+
+#newGame {
+	padding: 10px;
+	border: 2px solid black;
+	max-width: 25%;
+	text-align: center;
+}
+	/*
+	var green = "#33ff00";
+    var red = "#ff3300";
+    var black = "#000000";*/
