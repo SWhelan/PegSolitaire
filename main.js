@@ -5,12 +5,20 @@ var board = [[-1, -1, 1, 1, 1, -1, -1],
         [1, 1, 1, 1, 1, 1, 1],
                 [-1, -1, 1, 1, 1, -1, -1],
                 [-1, -1, 1, 1, 1,-1, -1]];
-var selectedId;  
-var pegCount = 32;           
+var selectedId;
+var pegCount = 32;
+var lastBoard  = [[-1, -1, 1, 1, 1, -1, -1], 
+                [-1, -1, 1, 1, 1, -1, -1], 
+        [1, 1, 1, 1, 1, 1, 1], 
+        [1, 1, 1, 0, 1, 1, 1], 
+        [1, 1, 1, 1, 1, 1, 1],
+                [-1, -1, 1, 1, 1, -1, -1],
+                [-1, -1, 1, 1, 1,-1, -1]];       
 $(document).ready(
 function init(){
 	createBoard();
     $("#pegCount").html("You have " + pegCount + " pegs left.");
+    $("#undo").css("color", "#cccccc");
     var selected = false;
     $('.pegSquare')
       .css('cursor', 'pointer')
@@ -27,6 +35,12 @@ function init(){
                 selectedId = "";
                 $(this).removeClass('selected');
             } else if(selected && second($(this).attr("id"))){
+                for(var i in board){
+                    for(j in board[i]){
+						lastBoard[i][j] = board[i][j];
+                    }
+                }
+                $('#undo').css("color", "#000000");
                 var id = $(this).attr("id");
             	var i = parseInt(id.substr(0, id.indexOf('_')));
 				var j = parseInt(id.substr(id.indexOf('_')+1, id.length));
@@ -113,6 +127,28 @@ function init(){
 			init();      
         }
       );
+      
+    $('#undo')
+    .css('cursor', 'pointer')
+    .click(
+        function(){
+        $("#content").empty();
+            for(var i in board){
+                for(j in board[i]){
+					board[i][j] = lastBoard[i][j];
+                }
+            }
+            pegCount = 0;
+            for(var i in board){
+                for(j in board[i]){
+                    if(board[i][j] == 1){
+                    pegCount++;
+                    }
+                }
+	        }                           
+	    init();
+		}
+    );
 });
 
 function createBoard(){

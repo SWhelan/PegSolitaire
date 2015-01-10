@@ -35,11 +35,12 @@
 	background-color: #ff3300;
 }
 
-#newGame {
+.button {
 	padding: 10px;
 	border: 2px solid black;
 	max-width: 25%;
 	text-align: center;
+	margin: 5px;
 }
 	/*
 	var green = "#33ff00";
